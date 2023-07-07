@@ -12,20 +12,18 @@
         <button type="submit">Submit</button>
     </form>
     <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-            </tr>  
-    </thead>
-    {{ range .Users }}
-    <tbody>
         <tr>
-            <td>{{ .ID }}</td>
-            <td>{{ .Name }}</td>
-            <td>{{ .Email }}</td>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+        </tr>  
+        {{range .}}
+        <tr>
+            <td>{{.ID}}</td>
+            <td>{{.Name}}</td>
+            <td>{{.Email}}</td>
         </tr>
+        {{end}}
     </table>
 </body>
 </html>
