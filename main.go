@@ -10,7 +10,7 @@ import (
 	"github.com/lib/pq"
 )
 
-func home_page(db *database.DB) http.HandlerFunc {
+func home_page(db database.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tmpl, err := template.ParseFiles("./page/index.html")
 		if err != nil {
@@ -37,7 +37,7 @@ func home_page(db *database.DB) http.HandlerFunc {
 
 func main() {
 	_ = pq.Array
-	db, err := database.New("user=postgres dbname=name_db sslmode=disable")
+	db, err := database.NewConnection("user=postgres dbname=name_db sslmode=disable")
 	if err != nil {
 		log.Fatalf("error connect db: %s", err)
 	}

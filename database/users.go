@@ -5,16 +5,15 @@ import (
 	"name-storage/database/models"
 )
 
-func (db *DB) PrepareUsers() error {
+func (db *db) prepareUsers() error {
 	const fn = "database.users.PrepareUsers: "
 
 	stmt, err := db.connection.Prepare(`
-		CREATE IF NOT EXISTS users(
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
+		CREATE TABLE IF NOT EXISTS users(
+			id SERIAL PRIMARY KEY,
 			name VARCHAR(255),
 			email VARCHAR(255)
 		);
-		CREATE INDEX IF NOT EXISTS idx_email on users(email)
 	`)
 	if err != nil {
 		log.Println(fn, err)
@@ -30,14 +29,20 @@ func (db *DB) PrepareUsers() error {
 	return nil
 }
 
-func (db *DB) AddUser(user *models.User) error {
+func (db *db) AddUser(user *models.User) error {
 	const fn = "database.users.AddUser: "
+
+	err := db.prepareUsers()
+	if err != nil {
+		log.Println(fn, err)
+		return err
+	}
 
 	query := db.connection.QueryRow(`
 		INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id;
 	`, user.Name, user.Email)
 
-	err := query.Scan(&user.ID)
+	err = query.Scan(&user.ID)
 	if err != nil {
 		log.Println(fn, err)
 		return err
@@ -47,8 +52,14 @@ func (db *DB) AddUser(user *models.User) error {
 	return nil
 }
 
-func (db *DB) AllUsers() ([]models.User, error) {
+func (db *db) AllUsers() ([]models.User, error) {
 	const fn = "database.users.AllUsers: "
+
+	err := db.prepareUsers()
+	if err != nil {
+		log.Println(fn, err)
+		return nil, err
+	}
 
 	rows, err := db.connection.Query(`
 		SELECT * FROM users
