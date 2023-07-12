@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"name-storage/database/models"
+	"name-storage/pkg/database/models"
 )
 
 type DB interface {

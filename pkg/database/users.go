@@ -2,7 +2,7 @@ package database
 
 import (
 	"log"
-	"name-storage/database/models"
+	"name-storage/pkg/database/models"
 )
 
 func (db *db) prepareUsers() error {
